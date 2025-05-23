@@ -273,3 +273,4 @@ mailpit
 exten_bot/media/
 
 .pytest_cache/
+.env

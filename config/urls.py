@@ -18,6 +18,20 @@ urlpatterns = [
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
 
+# API URLS
+urlpatterns += [
+    # API base url
+    path("api/", include("config.api_router")),
+    # DRF auth token
+    path("api/auth-token/", obtain_auth_token, name="obtain_auth_token"),
+    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
+    path(
+        "api/docs/",
+        SpectacularSwaggerView.as_view(url_name="api-schema"),
+        name="api-docs",
+    ),
+]
+
 if os.environ.get("DJANGO_SETTINGS_MODULE") == "config.settings.vendor":
     from wagtail import urls as wagtail_urls
     from wagtail.admin import urls as wagtailadmin_urls
@@ -32,21 +46,6 @@ else:
     urlpatterns = [
         path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     ] + urlpatterns
-
-
-# API URLS
-urlpatterns += [
-    # API base url
-    path("api/", include("config.api_router")),
-    # DRF auth token
-    path("api/auth-token/", obtain_auth_token, name="obtain_auth_token"),
-    path("api/schema/", SpectacularAPIView.as_view(), name="api-schema"),
-    path(
-        "api/docs/",
-        SpectacularSwaggerView.as_view(url_name="api-schema"),
-        name="api-docs",
-    ),
-]
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit

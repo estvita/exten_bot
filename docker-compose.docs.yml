@@ -1,0 +1,16 @@
+services:
+  docs:
+    image: exten_bot_local_docs
+    container_name: exten_bot_local_docs
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs:z
+      - ./config:/app/config:z
+      - ./exten_bot:/app/exten_bot:z
+    ports:
+      - '9000:9000'
+    command: /start-docs

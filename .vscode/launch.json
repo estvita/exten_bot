@@ -1,0 +1,58 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "App",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "0.0.0.0:8000"
+            ],
+            "django": true,
+            "autoStartBrowser": false,
+            "python": "${workspaceFolder}/.venv/bin/python"
+        },
+        {
+            "name": "Worker",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "console": "integratedTerminal",
+            "args": ["-A", "config.celery_app", "worker", "-l", "info", "-c", "3"],
+            "python": "${workspaceFolder}/.venv/bin/python",
+        },
+        {
+            "name": "Flower",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "console": "integratedTerminal",
+            "args": ["-A", "config.celery_app", "flower"],
+            "python": "${workspaceFolder}/.venv/bin/python",
+        },
+        {
+            "name": "Beat",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "celery",
+            "console": "integratedTerminal",
+            "args": ["-A", "config.celery_app", "beat", "-l", "info", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"],
+        }
+    ],
+    "compounds": [
+        {
+            "name": "App, Celery",
+            "configurations": ["App", "Worker", "Flower"]
+        },
+        {
+            "name": "App, Beat, Worker",
+            "configurations": ["App", "Worker", "Beat"]
+        },
+    ]
+}

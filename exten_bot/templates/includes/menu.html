@@ -1,0 +1,26 @@
+{% load i18n %}
+
+<header>
+  <ul class="navbar-nav me-auto">
+    {% if request.user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="/{{ ADMIN_URL }}">{% translate "Settings" %}</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'users:detail' request.user.pk %}">{% translate "My Profile" %}</a>
+      </li>
+      <li class="nav-item">
+        {# URL provided by django-allauth/account/urls.py #}
+        <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
+      </li>
+    {% else %}
+      <li class="nav-item">
+        {# URL provided by django-allauth/account/urls.py #}
+        <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
+      </li>
+    {% endif %}
+    {% if 'wagtail' in INSTALLED_APPS %}
+      {% include "includes/menu_wagtail.html" %}
+    {% endif %}
+  </ul>
+</header>

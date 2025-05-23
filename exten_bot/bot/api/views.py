@@ -6,25 +6,18 @@ from rest_framework.viewsets import GenericViewSet
 
 from exten_bot.bot.models import Bot
 
-from .permissions import AllowTrustedIpOrAuthenticated
+from .permissions import IsOwnerOrTrustedIp
 from .serializers import BotResponseSerializer
 
 
 class BotInfoViewSet(GenericViewSet):
-    permission_classes = [AllowTrustedIpOrAuthenticated]
+    permission_classes = [IsOwnerOrTrustedIp]
     serializer_class = BotResponseSerializer
     http_method_names = ["get"]
 
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                "bot",
-                str,
-                OpenApiParameter.QUERY,
-                required=True,
-                description="Bot username",
-            ),
-        ],
+        parameters=[OpenApiParameter(
+            "bot", str, OpenApiParameter.QUERY, required=True, description="Bot username")],
         responses={200: BotResponseSerializer},
     )
     def list(self, request, *args, **kwargs):
@@ -44,6 +37,7 @@ class BotInfoViewSet(GenericViewSet):
             return Response(
                 {"error": "Bot not found"}, status=status.HTTP_404_NOT_FOUND
             )
+        self.check_object_permissions(request, bot)
 
         flavor = "openai"
 

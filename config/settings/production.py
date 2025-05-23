@@ -105,6 +105,12 @@ INSTALLED_APPS += ["anymail"]
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 ANYMAIL = {}
 
+EMAIL_HOST = env("DJANGO_EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_USE_TLS = env.bool("DJANGO_EMAIL_USE_TLS", default=False)
+EMAIL_USE_SSL = env.bool("DJANGO_EMAIL_USE_SSL", default=True)
+EMAIL_PORT = env.int("DJANGO_EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("DJANGO_EMAIL_HOST_USER", default="your-email@gmail.com")
+EMAIL_HOST_PASSWORD = env("DJANGO_EMAIL_HOST_PASSWORD", default="")
 
 # LOGGING
 # ------------------------------------------------------------------------------

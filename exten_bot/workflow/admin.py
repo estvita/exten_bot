@@ -1,10 +1,10 @@
 from django.contrib import admin
 from guardian.admin import GuardedModelAdmin
 
-from .models import Workflow
+from .models import Dify
 
 
-@admin.register(Workflow)
+@admin.register(Dify)
 class DifyAdmin(GuardedModelAdmin):
     def get_list_display(self, request):
         base = ["id", "base_url"]
@@ -19,7 +19,7 @@ class DifyAdmin(GuardedModelAdmin):
         return qs.filter(owner=request.user)
 
     def get_fields(self, request, obj=None):
-        fields = ["base_url", "api_key", "expiration_date"]
+        fields = ["base_url", "api_key"]
         if request.user.is_superuser:
             fields.insert(0, "owner")
         return fields

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.db.models import Q
 from guardian.admin import GuardedModelAdmin
 
-from exten_bot.dify.models import Workflow
+from exten_bot.workflow.models import Dify
 
 from .models import Bot
 from .models import Domain
@@ -72,12 +72,10 @@ class FunctionAdmin(GuardedModelAdmin):
 @admin.register(Bot)
 class BotAdmin(GuardedModelAdmin):
     def get_list_display(self, request):
-        base = ["id", "username", "domain", "model", "voice"]
+        base = ["id", "expiration_date", "username", "domain", "model", "voice"]
         if request.user.is_superuser:
             base.insert(1, "owner")
         return base
-    
-    readonly_fields = ("username", "password")
 
     def get_fields(self, request, obj=None):
         fields = [
@@ -88,7 +86,7 @@ class BotAdmin(GuardedModelAdmin):
             "token",
             "model",
             "voice",
-            "workflow",
+            "dify",
             "instruction",
             "welcome_msg",
             "transfer_uri",
@@ -112,17 +110,23 @@ class BotAdmin(GuardedModelAdmin):
                 kwargs["queryset"] = Function.objects.all()
             else:
                 kwargs["queryset"] = Function.objects.filter(
-                    Q(owner=request.user) | Q(privacy="public"),
+                    Q(owner=request.user) | Q(privacy="public")
                 ).distinct()
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "workflow":
+        if db_field.name == "dify":
             if request.user.is_superuser:
-                kwargs["queryset"] = Workflow.objects.all()
+                kwargs["queryset"] = Dify.objects.all()
             else:
-                kwargs["queryset"] = Workflow.objects.filter(owner=request.user)
+                kwargs["queryset"] = Dify.objects.filter(owner=request.user)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_readonly_fields(self, request, obj=None):
+        base = ["username", "password"]
+        if not request.user.is_superuser:
+            base.append("expiration_date")
+        return base
 
     def save_model(self, request, obj, form, change):
         if not change and not request.user.is_superuser:

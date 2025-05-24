@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     "taggit",
     "wagtailcodeblock",
     "exten_bot.website",
+    "exten_bot.billing",
 ] + INSTALLED_APPS
 
 MIDDLEWARE = MIDDLEWARE + [

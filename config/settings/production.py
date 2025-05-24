@@ -160,7 +160,7 @@ LOGGING = {
 # -------------------------------------------------------------------------------
 # Tools that generate code samples can use SERVERS to point to the correct domain
 SPECTACULAR_SETTINGS["SERVERS"] = [
-    {"url": "https://exten.bot", "description": "Production server"},
+    {"url": env("BOT_API_URL", default="https://exten.bot"), "description": "Production server"},
 ]
 # Your stuff...
 # ------------------------------------------------------------------------------

@@ -9,4 +9,4 @@ class BotConfig(AppConfig):
 
     def ready(self):
         with contextlib.suppress(ImportError):
-            pass
+            import exten_bot.bot.signals  # noqa: F401

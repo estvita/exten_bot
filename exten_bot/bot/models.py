@@ -1,11 +1,12 @@
 import secrets
 import uuid
+import os
 
 from django.conf import settings
 from django.db import models
 
 from exten_bot.bot.tasks import manage_sip_user
-from exten_bot.dify.models import Workflow
+from exten_bot.workflow.models import Dify
 
 
 def function_default():
@@ -85,8 +86,8 @@ class Bot(models.Model):
     voice = models.ForeignKey(
         "Voice", on_delete=models.SET_NULL, related_name="bots", null=True
     )
-    workflow = models.ForeignKey(
-        Workflow, on_delete=models.SET_NULL, related_name="bots", null=True, blank=True
+    dify = models.ForeignKey(
+        Dify, on_delete=models.SET_NULL, related_name="bots", null=True, blank=True
     )
     instruction = models.TextField()
     welcome_msg = models.TextField(null=True, blank=True)
@@ -101,12 +102,19 @@ class Bot(models.Model):
         if not self.password:
             self.password = secrets.token_urlsafe(25)
 
+        if os.environ.get("DJANGO_SETTINGS_MODULE") == "config.settings.vendor":
+            if self.owner and not self.owner.is_superuser:
+                from exten_bot.billing.utils import get_date
+                if not self.expiration_date:
+                    self.expiration_date = get_date(self.owner)
+
         super().save(*args, **kwargs)
 
         if is_new:
             manage_sip_user.delay(
                 "add", self.username, self.domain.domain, self.password
             )
+
 
     def __str__(self):
         return f"{self.username}: {self.id}"

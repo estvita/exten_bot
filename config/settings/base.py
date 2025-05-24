@@ -95,7 +95,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "exten_bot.users",
     "exten_bot.bot",
-    "exten_bot.dify",
+    "exten_bot.workflow",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

@@ -71,7 +71,12 @@ class FunctionAdmin(GuardedModelAdmin):
 
 @admin.register(Bot)
 class BotAdmin(GuardedModelAdmin):
-    list_display = ("id", "username", "domain", "model", "voice")
+    def get_list_display(self, request):
+        base = ["id", "username", "domain", "model", "voice"]
+        if request.user.is_superuser:
+            base.insert(1, "owner")
+        return base
+    
     readonly_fields = ("username", "password")
 
     def get_fields(self, request, obj=None):

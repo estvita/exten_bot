@@ -37,7 +37,7 @@ class BotInfoViewSet(GenericViewSet):
             return Response(
                 {"error": "Bot not found"}, status=status.HTTP_404_NOT_FOUND
             )
-        self.check_object_permissions(request, bot)
+        # self.check_object_permissions(request, bot)
 
         flavor = "openai"
 

@@ -3,6 +3,7 @@ from .production import *
 INSTALLED_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
+    "wagtail.contrib.simple_translation",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -11,6 +12,7 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
+    "wagtail.locales",
     "wagtail",
     "modelcluster",
     "taggit",
@@ -38,3 +40,9 @@ WAGTAILDOCS_EXTENSIONS = [
     "zip",
 ]
 WAGTAIL_CMS_URL = env("WAGTAIL_CMS_URL", default="cms/")
+WAGTAIL_I18N_ENABLED = True
+
+WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
+    ('en', "English"),
+    ('ru', "Russian"),
+]

@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.db.models import Q
 from guardian.admin import GuardedModelAdmin
 
+from django import forms
+
 from exten_bot.workflow.models import Dify
 
 from .models import Bot
@@ -69,8 +71,18 @@ class FunctionAdmin(GuardedModelAdmin):
         return super().has_delete_permission(request, obj)
 
 
+class BotAdminForm(forms.ModelForm):
+    class Meta:
+        model = Bot
+        fields = "__all__"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['token'].widget = forms.PasswordInput(render_value=True)
+
 @admin.register(Bot)
 class BotAdmin(GuardedModelAdmin):
+    form = BotAdminForm
     def get_list_display(self, request):
         base = ["id", "expiration_date", "username", "domain", "model", "voice"]
         if request.user.is_superuser:

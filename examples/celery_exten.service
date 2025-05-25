@@ -1,0 +1,13 @@
+[Unit]
+Description=exten Celery Worker
+After=network.target
+
+[Service]
+User=user
+WorkingDirectory=/home/user/exten_bot
+EnvironmentFile=/home/user/exten_bot/.env
+ExecStart=/home/user/exten_bot/.venv/bin/celery -A config.celery_app worker -c 1 -l error
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

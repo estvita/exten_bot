@@ -1,8 +1,21 @@
 {% load wagtailcore_tags navigation_tags i18n %}
-
 {% get_site_root as site_root %}
+{% get_current_language as LANGUAGE_CODE %}
+
 {% for menuitem in site_root.get_children.live.in_menu %}
-  <li class="nav-item">
-    <a class="nav-link" href="{% pageurl menuitem %}">{{ menuitem.specific.get_menu_title }}</a>
-  </li>
+    {% get_menuitem_translation menuitem LANGUAGE_CODE as translated %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% pageurl translated %}">
+            {{ translated.specific.get_menu_title }}
+        </a>
+    </li>
 {% endfor %}
+{% if page %}
+    {% for translation in page.get_translations.live %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% pageurl translation %}" rel="alternate" hreflang="{{ translation.locale.language_code }}">
+            {{ translation.locale.language_name_local }}
+        </a>
+    </li>
+    {% endfor %}
+{% endif %}

@@ -1,0 +1,8 @@
+[Unit]
+Description=exten socket
+
+[Socket]
+ListenStream=/run/exten.sock
+
+[Install]
+WantedBy=sockets.target

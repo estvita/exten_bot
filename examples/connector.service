@@ -1,0 +1,17 @@
+[Unit]
+Description= AI Voice Connector
+After=network.target opensips.service
+Requires=opensips.service
+PartOf=opensips.service
+BindsTo=opensips.service
+
+[Service]
+Type=simple
+User=user
+WorkingDirectory=/home/user/voice
+ExecStart=/home/user/user/.venv/bin/python src/main.py -c config.ini
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

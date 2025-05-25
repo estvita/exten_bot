@@ -4,6 +4,7 @@ INSTALLED_APPS = [
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
     "wagtail.contrib.simple_translation",
+    "django.contrib.sitemaps",
     "wagtail.embeds",
     "wagtail.sites",
     "wagtail.users",
@@ -27,6 +28,7 @@ MIDDLEWARE = MIDDLEWARE + [
 
 WAGTAIL_SITE_NAME = "exten.bot"
 WAGTAILADMIN_BASE_URL = "https://exten.bot"
+WAGTAILEMBEDS_RESPONSIVE_HTML = True
 WAGTAILDOCS_EXTENSIONS = [
     "csv",
     "docx",

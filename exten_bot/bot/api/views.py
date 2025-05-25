@@ -65,7 +65,7 @@ class BotInfoViewSet(GenericViewSet):
                 "instructions": bot.instruction,
                 "welcome_message": bot.welcome_msg,
                 "tools": tools,
-                "transfer_uri": bot.transfer_uri,
+                "transfer_to": bot.transfer_uri,
                 "temperature": float(bot.temperature)
                 if bot.temperature is not None
                 else None,

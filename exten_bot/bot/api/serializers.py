@@ -8,7 +8,7 @@ class BotResponseContentSerializer(serializers.Serializer):
     instructions = serializers.CharField()
     welcome_message = serializers.CharField(allow_null=True)
     tools = serializers.ListField(child=serializers.JSONField())
-    transfer_uri = serializers.CharField(allow_null=True)
+    transfer_to = serializers.CharField(allow_null=True)
     temperature = serializers.FloatField()
     max_tokens = serializers.IntegerField()
     dify_url = serializers.CharField(allow_null=True)

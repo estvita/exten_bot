@@ -12,6 +12,8 @@ from drf_spectacular.views import SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 
 from django.conf.urls.i18n import i18n_patterns
+from wagtail.contrib.sitemaps.views import sitemap
+
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
@@ -42,6 +44,8 @@ if os.environ.get("DJANGO_SETTINGS_MODULE") == "config.settings.vendor":
     urlpatterns += [
         path(settings.WAGTAIL_CMS_URL, include(wagtailadmin_urls)),
         path("documents/", include(wagtaildocs_urls)),
+        path('sitemap.xml', sitemap),
+
     ]
     urlpatterns += i18n_patterns(
         path("", include(wagtail_urls)),

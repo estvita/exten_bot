@@ -15,6 +15,7 @@
 
 .responsive-object {
   position: relative;
+  padding-bottom: 55.0% !important;
 }
 
 .responsive-object iframe,

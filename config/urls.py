@@ -45,7 +45,6 @@ if os.environ.get("DJANGO_SETTINGS_MODULE") == "config.settings.vendor":
         path(settings.WAGTAIL_CMS_URL, include(wagtailadmin_urls)),
         path("documents/", include(wagtaildocs_urls)),
         path('sitemap.xml', sitemap),
-
     ]
     urlpatterns += i18n_patterns(
         path("", include(wagtail_urls)),

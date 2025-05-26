@@ -48,6 +48,7 @@ if os.environ.get("DJANGO_SETTINGS_MODULE") == "config.settings.vendor":
     ]
     urlpatterns += i18n_patterns(
         path("", include(wagtail_urls)),
+        prefix_default_language=False,
     )
     
 else:

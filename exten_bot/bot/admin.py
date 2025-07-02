@@ -3,6 +3,7 @@ from django.db.models import Q
 from guardian.admin import GuardedModelAdmin
 
 from django import forms
+from openai import OpenAI
 
 from exten_bot.workflow.models import Dify
 
@@ -11,6 +12,15 @@ from .models import Domain
 from .models import Function
 from .models import Model
 from .models import Voice
+
+
+def check_openai_key(api_key):
+    try:
+        client = OpenAI(api_key=api_key)
+        client.models.list()
+        return True
+    except Exception as e:
+        return str(e)
 
 
 @admin.register(Model)
@@ -79,6 +89,14 @@ class BotAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['token'].widget = forms.PasswordInput(render_value=True)
+
+    def clean_token(self):
+        token = self.cleaned_data.get("token")
+        if token:
+            result = check_openai_key(token)
+            if result is not True:
+                raise forms.ValidationError(f"OpenAI key validation error: {result}")
+        return token
 
 @admin.register(Bot)
 class BotAdmin(GuardedModelAdmin):

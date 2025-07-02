@@ -47,12 +47,27 @@ class Model(models.Model):
 
 
 class Function(models.Model):
-    name = models.CharField(max_length=255, default="my function")
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    name = models.CharField(
+        max_length=255, 
+        default="my function", 
+        help_text="Enter the name of the function"
     )
-    description = models.JSONField(default=function_default)
-    privacy = models.CharField(max_length=50, choices=PRIVACY, default="private")
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="Owner of the function"
+    )
+    description = models.JSONField(
+        default=function_default,
+        help_text="Provide a JSON description of the function"
+    )
+    privacy = models.CharField(
+        max_length=50,
+        choices=PRIVACY,
+        default="private",
+        help_text="Privacy setting for the function"
+    ) 
 
     def __str__(self):
         return self.name
@@ -70,31 +85,90 @@ class Voice(models.Model):
 
 
 class Bot(models.Model):
-    username = models.CharField(max_length=32, default=generate_uuid)
-    password = models.CharField(max_length=255, default=generate_uuid)
-    expiration_date = models.DateTimeField(null=True, blank=True)
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True
+    username = models.CharField(
+        max_length=32,
+        default=generate_uuid,
+        help_text="Bot's username"
     )
-    token = models.CharField(max_length=500)
+    password = models.CharField(
+        max_length=255,
+        default=generate_uuid,
+        help_text="Bot's password"
+    )
+    expiration_date = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="Expiration date for the bot"
+    )
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="Owner of the bot"
+    )
+    token = models.CharField(
+        max_length=500,
+        help_text="OpenAI token"
+    )
     domain = models.ForeignKey(
-        "Domain", on_delete=models.SET_NULL, related_name="bots", null=True
+        "Domain",
+        on_delete=models.SET_NULL,
+        related_name="bots",
+        null=True,
+        help_text="SIP Server associated with the bot"
     )
     model = models.ForeignKey(
-        "Model", on_delete=models.SET_NULL, related_name="bots", null=True
+        "Model",
+        on_delete=models.SET_NULL,
+        related_name="bots",
+        null=True,
+        help_text="Model used by the bot"
     )
     voice = models.ForeignKey(
-        "Voice", on_delete=models.SET_NULL, related_name="bots", null=True
+        "Voice",
+        on_delete=models.SET_NULL,
+        related_name="bots",
+        null=True,
+        help_text="Voice configuration for the bot"
     )
     dify = models.ForeignKey(
-        Dify, on_delete=models.SET_NULL, related_name="bots", null=True, blank=True
+        Dify,
+        on_delete=models.SET_NULL,
+        related_name="bots",
+        null=True,
+        blank=True,
+        help_text="Dify integration (optional)"
     )
-    instruction = models.TextField()
-    welcome_msg = models.TextField(null=True, blank=True)
-    transfer_uri = models.CharField(max_length=255, null=True, blank=True)
-    functions = models.ManyToManyField(Function, related_name="bots", blank=True)
-    temperature = models.DecimalField(max_digits=3, decimal_places=2, default=1.0)
-    max_tokens = models.PositiveIntegerField(default=4096)
+    instruction = models.TextField(
+        help_text="Instructions for the bot"
+    )
+    welcome_msg = models.TextField(
+        null=True,
+        blank=True,
+        help_text="The message that the bot will say upon connecting."
+    )
+    transfer_uri = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        help_text="URI to transfer the conversation (optional)"
+    )
+    functions = models.ManyToManyField(
+        Function,
+        related_name="bots",
+        blank=True,
+        help_text="Functions assigned to this bot"
+    )
+    temperature = models.DecimalField(
+        max_digits=3,
+        decimal_places=2,
+        default=1.0,
+        help_text="Sampling temperature (0.0-1.0)"
+    )
+    max_tokens = models.PositiveIntegerField(
+        default=4096,
+        help_text="Maximum number of tokens"
+    )
 
     def save(self, *args, **kwargs):
         is_new = self._state.adding

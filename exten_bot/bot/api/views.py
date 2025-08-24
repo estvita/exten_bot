@@ -37,7 +37,6 @@ class BotInfoViewSet(GenericViewSet):
         try:
             bot = (
                 Bot.objects.select_related("model", "voice")
-                .prefetch_related("functions")
                 .get(username=username)
             )
         except Bot.DoesNotExist:
@@ -55,7 +54,6 @@ class BotInfoViewSet(GenericViewSet):
 
         flavor = "openai"
 
-        tools = [func.description for func in bot.functions.all()]
         response = {
             "flavor": flavor,
             flavor: {
@@ -64,7 +62,6 @@ class BotInfoViewSet(GenericViewSet):
                 "voice": bot.voice.voice if bot.voice else None,
                 "instructions": bot.instruction,
                 "welcome_message": bot.welcome_msg,
-                "tools": tools,
                 "transfer_to": bot.transfer_uri,
                 "temperature": float(bot.temperature)
                 if bot.temperature is not None
@@ -72,9 +69,9 @@ class BotInfoViewSet(GenericViewSet):
                 "max_tokens": bot.max_tokens,
             },
         }
-        if bot.dify:
-            response[flavor]["dify_url"] = bot.dify.base_url
-            response[flavor]["dify_key"] = bot.dify.api_key
+        if bot.mcp:
+            response[flavor]["mcp_url"] = bot.mcp.base_url
+            response[flavor]["mcp_key"] = bot.mcp.api_key
 
         response_serializer = BotResponseSerializer(response)
         return Response(response_serializer.data, status=status.HTTP_200_OK)

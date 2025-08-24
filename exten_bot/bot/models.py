@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 
 from exten_bot.bot.tasks import manage_sip_user
-from exten_bot.workflow.models import Dify
+from exten_bot.workflow.models import Mcp
 
 
 def function_default():
@@ -41,33 +41,6 @@ class Domain(models.Model):
 class Model(models.Model):
     name = models.CharField(max_length=255)
     max_completion_tokens = models.PositiveIntegerField(default=4096)
-
-    def __str__(self):
-        return self.name
-
-
-class Function(models.Model):
-    name = models.CharField(
-        max_length=255, 
-        default="my function", 
-        help_text="Enter the name of the function"
-    )
-    owner = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text="Owner of the function"
-    )
-    description = models.JSONField(
-        default=function_default,
-        help_text="Provide a JSON description of the function"
-    )
-    privacy = models.CharField(
-        max_length=50,
-        choices=PRIVACY,
-        default="private",
-        help_text="Privacy setting for the function"
-    ) 
 
     def __str__(self):
         return self.name
@@ -131,13 +104,13 @@ class Bot(models.Model):
         null=True,
         help_text="Voice configuration for the bot"
     )
-    dify = models.ForeignKey(
-        Dify,
+    mcp = models.ForeignKey(
+        Mcp,
         on_delete=models.SET_NULL,
         related_name="bots",
         null=True,
         blank=True,
-        help_text="Dify integration (optional)"
+        help_text="Mcp integration (optional)"
     )
     instruction = models.TextField(
         help_text="Instructions for the bot"
@@ -152,12 +125,6 @@ class Bot(models.Model):
         null=True,
         blank=True,
         help_text="URI to transfer the conversation (optional)"
-    )
-    functions = models.ManyToManyField(
-        Function,
-        related_name="bots",
-        blank=True,
-        help_text="Functions assigned to this bot"
     )
     temperature = models.DecimalField(
         max_digits=3,

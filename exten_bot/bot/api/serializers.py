@@ -7,12 +7,11 @@ class BotResponseContentSerializer(serializers.Serializer):
     voice = serializers.CharField(allow_null=True)
     instructions = serializers.CharField()
     welcome_message = serializers.CharField(allow_null=True)
-    tools = serializers.ListField(child=serializers.JSONField())
     transfer_to = serializers.CharField(allow_null=True)
     temperature = serializers.FloatField()
     max_tokens = serializers.IntegerField()
-    dify_url = serializers.CharField(allow_null=True)
-    dify_key = serializers.CharField(allow_null=True)
+    mcp_url = serializers.CharField(allow_null=True)
+    mcp_key = serializers.CharField(allow_null=True)
 
 
 class BotResponseSerializer(serializers.Serializer):

@@ -8,7 +8,6 @@ from openai import OpenAI
 from exten_bot.workflow.models import Mcp
 
 from .models import Bot
-from .models import Domain
 from .models import Model
 from .models import Voice
 
@@ -34,12 +33,6 @@ class VoiceAdmin(admin.ModelAdmin):
     list_per_page = 50
 
 
-@admin.register(Domain)
-class DomainAdmin(admin.ModelAdmin):
-    list_display = ("domain", "owner")
-    list_per_page = 50
-
-
 class BotAdminForm(forms.ModelForm):
     class Meta:
         model = Bot
@@ -60,14 +53,18 @@ class BotAdminForm(forms.ModelForm):
 @admin.register(Bot)
 class BotAdmin(GuardedModelAdmin):
     form = BotAdminForm
+    list_filter = ["type"]
+    search_fields = ["username", "domain"]
+    
     def get_list_display(self, request):
-        base = ["id", "expiration_date", "username", "domain", "model", "voice"]
+        base = ["id", "expiration_date", "domain", "voice", "type"]
         if request.user.is_superuser:
             base.insert(1, "owner")
         return base
 
     def get_fields(self, request, obj=None):
         fields = [
+            "type",
             "username",
             "password",
             "domain",
@@ -104,7 +101,7 @@ class BotAdmin(GuardedModelAdmin):
     def get_readonly_fields(self, request, obj=None):
         base = []
         if not request.user.is_superuser:
-            base.extend(["username", "password", "expiration_date"])
+            base.extend(["expiration_date"])
         return base
 
     def save_model(self, request, obj, form, change):

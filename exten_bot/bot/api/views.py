@@ -19,6 +19,8 @@ class BotInfoViewSet(GenericViewSet):
     @extend_schema(
         parameters=[OpenApiParameter(
             "bot", str, OpenApiParameter.QUERY, required=True, description="Bot username"
+        ), OpenApiParameter(
+            "domain", str, OpenApiParameter.QUERY, required=True, description="Bot domain"
         )],
         responses={
             200: BotResponseSerializer,
@@ -29,16 +31,23 @@ class BotInfoViewSet(GenericViewSet):
     )
     def list(self, request, *args, **kwargs):
         username = request.query_params.get("bot")
-        if not username:
+        domain = request.query_params.get("domain")
+        if not username or not domain:
             return Response(
                 {"error": "Bot parameter is required"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
-            bot = (
-                Bot.objects.select_related("model", "voice")
-                .get(username=username)
-            )
+            if request.user.is_superuser:
+                bot = (
+                    Bot.objects.select_related("model", "voice")
+                    .get(username=username, domain=domain)
+                )
+            else:
+                bot = (
+                    Bot.objects.select_related("model", "voice")
+                    .get(username=username, domain=domain, owner=request.user)
+                )
         except Bot.DoesNotExist:
             return Response(
                 {"error": "Bot not found"}, status=status.HTTP_404_NOT_FOUND

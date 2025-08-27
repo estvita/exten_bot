@@ -16,6 +16,9 @@ if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".env"))
 
+# OpenSIPs
+OPENSIPS_DB_URL = env("OPENSIPS_DB_URL", default="postgres:///opensips")
+OPENSIPS_CLI_CONF = env("OPENSIPS_CLI_CONF", default="~/.opensips-cli.cfg")
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug

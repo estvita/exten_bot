@@ -5,7 +5,7 @@ import os
 from django.conf import settings
 from django.db import models
 
-from exten_bot.bot.tasks import manage_sip_user
+from exten_bot.bot.tasks import manage_sip_user, manage_registrant
 from exten_bot.workflow.models import Mcp
 
 
@@ -28,14 +28,10 @@ PRIVACY = [
     ("public", "public"),
 ]
 
-
-class Domain(models.Model):
-    domain = models.CharField(max_length=255, default="exten.bot")
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    privacy = models.CharField(max_length=50, choices=PRIVACY, default="public")
-
-    def __str__(self):
-        return self.domain
+BOT_TYPES = [
+    ("registrant", "registrant"),
+    ("registrar", "registrar"),
+]
 
 
 class Model(models.Model):
@@ -79,15 +75,21 @@ class Bot(models.Model):
         null=True,
         help_text="Owner of the bot"
     )
+    type = models.CharField(
+        max_length=50,
+        choices=BOT_TYPES,
+        default="registrar",
+        help_text="Type of bot"
+    )
     token = models.CharField(
         max_length=500,
         help_text="OpenAI token"
     )
-    domain = models.ForeignKey(
-        "Domain",
-        on_delete=models.SET_NULL,
-        related_name="bots",
+    domain = models.CharField(
+        max_length=255,
         null=True,
+        blank=True,
+        default="exten.bot",
         help_text="SIP Server associated with the bot"
     )
     model = models.ForeignKey(
@@ -152,9 +154,14 @@ class Bot(models.Model):
         super().save(*args, **kwargs)
 
         if is_new:
-            manage_sip_user.delay(
-                "add", self.username, self.domain.domain, self.password
-            )
+            if self.type == "registrar":
+                manage_sip_user.delay(
+                    "add", self.username, self.domain, self.password
+                )
+            elif self.type == "registrant":
+                manage_registrant.delay(
+                    "add", self.username, self.domain, self.password
+                )
 
 
     def __str__(self):

@@ -63,7 +63,6 @@ class Migration(migrations.Migration):
                 ('transfer_uri', models.CharField(blank=True, max_length=255, null=True)),
                 ('temperature', models.DecimalField(decimal_places=2, default=1.0, max_digits=3)),
                 ('max_tokens', models.PositiveIntegerField(default=4096)),
-                ('dify', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='bots', to='workflow.dify')),
                 ('owner', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
                 ('domain', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='bots', to='bot.domain')),
                 ('functions', models.ManyToManyField(blank=True, related_name='bots', to='bot.function')),

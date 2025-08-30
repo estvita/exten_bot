@@ -41,11 +41,13 @@ class BotInfoViewSet(GenericViewSet):
             if request.user.is_superuser:
                 bot = (
                     Bot.objects.select_related("model", "voice")
+                    .prefetch_related("functions")
                     .get(username=username, domain=domain)
                 )
             else:
                 bot = (
                     Bot.objects.select_related("model", "voice")
+                    .prefetch_related("functions")
                     .get(username=username, domain=domain, owner=request.user)
                 )
         except Bot.DoesNotExist:
@@ -78,9 +80,16 @@ class BotInfoViewSet(GenericViewSet):
                 "max_tokens": bot.max_tokens,
             },
         }
-        if bot.mcp:
-            response[flavor]["mcp_url"] = bot.mcp.base_url
-            response[flavor]["mcp_key"] = bot.mcp.api_key
+        if bot.functions.exists():
+            response[flavor]["functions"] = [
+                {
+                    "url": function.url,
+                    "token": function.token if function.token else None,
+                    "function": function.json_schema,
+                    "input_schema": function.input_schema if function.input_schema else None
+                }
+                for function in bot.functions.all()
+            ]
 
         response_serializer = BotResponseSerializer(response)
         return Response(response_serializer.data, status=status.HTTP_200_OK)

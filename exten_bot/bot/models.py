@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 
 from exten_bot.bot.tasks import manage_sip_user, manage_registrant
-from exten_bot.workflow.models import Mcp
+from exten_bot.workflow.models import Function
 
 
 def function_default():
@@ -106,14 +106,7 @@ class Bot(models.Model):
         null=True,
         help_text="Voice configuration for the bot"
     )
-    mcp = models.ForeignKey(
-        Mcp,
-        on_delete=models.SET_NULL,
-        related_name="bots",
-        null=True,
-        blank=True,
-        help_text="Mcp integration (optional)"
-    )
+
     instruction = models.TextField(
         help_text="Instructions for the bot"
     )
@@ -137,6 +130,12 @@ class Bot(models.Model):
     max_tokens = models.PositiveIntegerField(
         default=4096,
         help_text="Maximum number of tokens"
+    )
+    functions = models.ManyToManyField(
+        Function,
+        related_name="bots",
+        blank=True,
+        help_text="Functions available to this bot"
     )
 
     def save(self, *args, **kwargs):

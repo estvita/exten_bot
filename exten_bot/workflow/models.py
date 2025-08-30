@@ -22,3 +22,15 @@ class Mcp(models.Model):
 
     def __str__(self):
         return f"{self.id} - {self.owner}"
+
+
+class Function(models.Model):
+    name = models.CharField(max_length=255, default="my function", help_text="Name of the function")
+    url = models.URLField(help_text="URL of the function")
+    token = models.CharField(max_length=1000, help_text="Bearer Token of the url", blank=True, null=True)
+    json_schema = models.JSONField(help_text="JSON schema of the function")
+    input_schema = models.JSONField(help_text="Input schema of the function", blank=True, null=True)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.id} - {self.name}"

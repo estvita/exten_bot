@@ -1,6 +1,12 @@
 from rest_framework import serializers
 
 
+class FunctionSerializer(serializers.Serializer):
+    url = serializers.URLField()
+    token = serializers.CharField(allow_null=True)
+    function = serializers.JSONField()
+    input_schema = serializers.JSONField(allow_null=True)
+
 class BotResponseContentSerializer(serializers.Serializer):
     model = serializers.CharField()
     key = serializers.CharField(allow_null=True)
@@ -10,8 +16,7 @@ class BotResponseContentSerializer(serializers.Serializer):
     transfer_to = serializers.CharField(allow_null=True)
     temperature = serializers.FloatField()
     max_tokens = serializers.IntegerField()
-    mcp_url = serializers.CharField(allow_null=True)
-    mcp_key = serializers.CharField(allow_null=True)
+    functions = FunctionSerializer(many=True, required=False, allow_null=True)
 
 
 class BotResponseSerializer(serializers.Serializer):

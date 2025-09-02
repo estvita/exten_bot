@@ -48,6 +48,12 @@ def generate_uuid():
 
 class Voice(models.Model):
     voice = models.CharField(max_length=255, unique=True)
+    voice_sample = models.FileField(
+        upload_to='voice_samples/',
+        blank=True,
+        null=True,
+        help_text="Example voice sample"
+    )
 
     def __str__(self):
         return self.voice

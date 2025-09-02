@@ -4,7 +4,7 @@ from guardian.admin import GuardedModelAdmin
 
 from django import forms
 from openai import OpenAI
-
+from django.utils.html import format_html
 from exten_bot.workflow.models import Function, Mcp
 
 from .models import Bot
@@ -29,8 +29,19 @@ class ModelAdmin(admin.ModelAdmin):
 
 @admin.register(Voice)
 class VoiceAdmin(admin.ModelAdmin):
-    list_display = ("voice",)
+    list_display = ("voice", "voice_sample_display")
     list_per_page = 50
+    fields = ("voice", "voice_sample")
+    
+    def voice_sample_display(self, obj):
+        if obj.voice_sample:
+            return format_html(
+                '<a href="{}" target="_blank" class="button">🎵 Listen</a>',
+                obj.voice_sample.url
+            )
+        return "No file"
+    voice_sample_display.short_description = "Example voice"
+    voice_sample_display.allow_tags = True
 
 
 class BotAdminForm(forms.ModelForm):

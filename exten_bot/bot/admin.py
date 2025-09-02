@@ -5,7 +5,7 @@ from guardian.admin import GuardedModelAdmin
 from django import forms
 from openai import OpenAI
 
-from exten_bot.workflow.models import Function
+from exten_bot.workflow.models import Function, Mcp
 
 from .models import Bot
 from .models import Model
@@ -73,6 +73,7 @@ class BotAdmin(GuardedModelAdmin):
             "model",
             "voice",
             "functions",
+            "mcp_servers",
             "instruction",
             "welcome_msg",
             "transfer_uri",
@@ -96,6 +97,11 @@ class BotAdmin(GuardedModelAdmin):
                 kwargs["queryset"] = Function.objects.all()
             else:
                 kwargs["queryset"] = Function.objects.filter(owner=request.user)
+        elif db_field.name == "mcp_servers":
+            if request.user.is_superuser:
+                kwargs["queryset"] = Mcp.objects.all()
+            else:
+                kwargs["queryset"] = Mcp.objects.filter(owner=request.user)
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
     def get_readonly_fields(self, request, obj=None):

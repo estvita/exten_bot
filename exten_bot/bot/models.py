@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import models
 
 from exten_bot.bot.tasks import manage_sip_user, manage_registrant
-from exten_bot.workflow.models import Function
+from exten_bot.workflow.models import Function, Mcp
 
 
 def function_default():
@@ -136,6 +136,12 @@ class Bot(models.Model):
         related_name="bots",
         blank=True,
         help_text="Functions available to this bot"
+    )
+    mcp_servers = models.ManyToManyField(
+        Mcp,
+        related_name="bot_servers",
+        blank=True,
+        help_text="MCP servers available to this bot"
     )
 
     def save(self, *args, **kwargs):

@@ -20,13 +20,13 @@ class McpAdmin(GuardedModelAdmin):
     form = McpAdminForm
     
     def get_list_display(self, request):
-        base = ["id", "base_url", "owner"]
+        base = ["id", "server_url", "owner"]
         if request.user.is_superuser:
             return base
-        return ["id", "base_url"]
+        return ["id", "server_url"]
 
     def get_fields(self, request, obj=None):
-        fields = ["base_url", "api_key"]
+        fields = ["server_url", "api_key", "server_label", "require_approval"]
         if request.user.is_superuser:
             fields.insert(0, "owner")
         return fields

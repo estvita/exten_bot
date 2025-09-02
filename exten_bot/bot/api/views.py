@@ -41,13 +41,13 @@ class BotInfoViewSet(GenericViewSet):
             if request.user.is_superuser:
                 bot = (
                     Bot.objects.select_related("model", "voice")
-                    .prefetch_related("functions")
+                    .prefetch_related("functions", "mcp_servers")
                     .get(username=username, domain=domain)
                 )
             else:
                 bot = (
                     Bot.objects.select_related("model", "voice")
-                    .prefetch_related("functions")
+                    .prefetch_related("functions", "mcp_servers")
                     .get(username=username, domain=domain, owner=request.user)
                 )
         except Bot.DoesNotExist:
@@ -89,6 +89,17 @@ class BotInfoViewSet(GenericViewSet):
                     "input_schema": function.input_schema if function.input_schema else None
                 }
                 for function in bot.functions.all()
+            ]
+
+        if bot.mcp_servers.exists():
+            response[flavor]["mcp_servers"] = [
+                {
+                    "url": mcp.server_url,
+                    "api_key": mcp.api_key if mcp.api_key else None,
+                    "label": getattr(mcp, 'server_label', "mcp_server"),
+                    "require_approval": getattr(mcp, 'require_approval', "never")
+                }
+                for mcp in bot.mcp_servers.all()
             ]
 
         response_serializer = BotResponseSerializer(response)

@@ -3,13 +3,17 @@ from django.conf import settings
 from django.db import models
 
 class Mcp(models.Model):
+    APPROVAL_CHOICES = [
+        ("never", "Never"),
+        ("always", "Always"),
+    ]
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL, 
         on_delete=models.CASCADE, 
         related_name="mcp",
         help_text="User who owns this Mcp configuration"
     )
-    base_url = models.URLField(
+    server_url = models.URLField(
         default="http://localhost:8000",
         help_text="Base URL for the Mcp server"
     )
@@ -19,9 +23,29 @@ class Mcp(models.Model):
         blank=True,
         null=True
     )
+    server_label = models.CharField(
+        max_length=255, 
+        help_text="Label of the server", 
+        unique=True,
+        blank=True
+    )
+    require_approval = models.CharField(max_length=255, choices=APPROVAL_CHOICES, default="never")
 
     def __str__(self):
-        return f"{self.id} - {self.owner}"
+        return f"{self.id} - {self.server_label}"
+
+    def save(self, *args, **kwargs):
+        if not self.server_label:
+            # Генерируем уникальный label
+            base_label = "mcp_server"
+            counter = 1
+            while True:
+                new_label = f"{base_label}_{counter}"
+                if not Mcp.objects.filter(server_label=new_label).exists():
+                    self.server_label = new_label
+                    break
+                counter += 1
+        super().save(*args, **kwargs)
 
 
 class Function(models.Model):

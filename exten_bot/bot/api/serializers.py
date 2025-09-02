@@ -7,6 +7,13 @@ class FunctionSerializer(serializers.Serializer):
     function = serializers.JSONField()
     input_schema = serializers.JSONField(allow_null=True)
 
+
+class McpServerSerializer(serializers.Serializer):
+    url = serializers.URLField()
+    api_key = serializers.CharField(allow_null=True)
+    label = serializers.CharField(allow_null=True)
+    require_approval = serializers.CharField(allow_null=False)
+
 class BotResponseContentSerializer(serializers.Serializer):
     model = serializers.CharField()
     key = serializers.CharField(allow_null=True)
@@ -17,6 +24,7 @@ class BotResponseContentSerializer(serializers.Serializer):
     temperature = serializers.FloatField()
     max_tokens = serializers.IntegerField()
     functions = FunctionSerializer(many=True, required=False, allow_null=True)
+    mcp_servers = McpServerSerializer(many=True, required=False, allow_null=True)
 
 
 class BotResponseSerializer(serializers.Serializer):

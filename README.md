@@ -14,7 +14,7 @@ You can test its features at [exten.bot](https://exten.bot).
 
 ### SIP Server OpenSIPS
 
-+ You need to install the OpenSIPS 3.5 server; please use the [official documentation](https://www.opensips.org/Documentation/Manual-3-5) for this.
++ You need to install the OpenSIPS 3.6 server; please use the [official documentation](https://www.opensips.org/Documentation/Manual-3-6) for this.
 + place the configuration files [opensips.cfg](examples/opensips-cli.cfg) and [opensips-cli.sfg](examples/opensips-cli.cfg) in the folder 
 /etc/opensips and replace the database connection data with your own
 + add your sip exten.bot domain (exten.example.com) to opensips domains tables

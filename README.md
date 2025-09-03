@@ -6,7 +6,7 @@ The system is built on an OpenSIPS server and the [opensips-ai-voice-connector](
 
 For AI, it uses the OpenAI real-time API.
 
-The platform supports dify.ai workflows for designing bot logic and integrating with other systems via function calls.
+The platform supports custom functions and MCP servers for extending bot capabilities and integrating with external systems.
 
 You can test its features at [exten.bot](https://exten.bot).
 
@@ -20,7 +20,7 @@ You can test its features at [exten.bot](https://exten.bot).
 + add your sip exten.bot domain (exten.example.com) to opensips domains tables
 
 ### AI Voice Connector 
-If you need dify.ai workflow support use my fork of the [voice connector](https://github.com/estvita/opensips-ai-voice-connector-ce), otherwise you can use the original
+Use my fork of the [voice connector](https://github.com/estvita/opensips-ai-voice-connector-ce) for enhanced functionality
 
 I haven't tested my connection with installing the openai voice connector in Docker, so for now we'll run it in a virtual python environment.
 
@@ -78,9 +78,8 @@ go to the admin panel at your_domain/admin and fill in the following data
 + /admin/bot/model/ add models [gpt-4o-realtime-preview](https://platform.openai.com/docs/models/gpt-4o-realtime-preview)
 + /admin/bot/voice/ add bot [voices](https://platform.openai.com/docs/guides/realtime-conversations#voice-options)
 
-if you want to use [dify.ai workflows](https://dify.ai/blog/dify-ai-workflow) 
-+ /admin/workflow/dify/ add api-key and url
-+ /admin/bot/function/ add a [description of the function](https://platform.openai.com/docs/guides/function-calling?api-mode=responses#defining-functions) that the voice bot will call when necessary
++ /admin/workflow/function/ add custom functions that the voice bot can call during conversations
++ /admin/workflow/mcp/ add MCP servers for extended bot capabilities
 
 Now you can create a voice bot
 + /admin/bot/bot/ add bot
@@ -93,14 +92,29 @@ Description of fields
 + Token - [openai token](https://platform.openai.com/api-keys)
 + Model - openai realtime model
 + Voice - openai voice
-+ Dify - If you have created a dify.ai workflow, you can link it to a voice bot here
 + Instruction - text instruction for the bot
 + Welcome msg - the message that the bot will voice when connecting
 + Transfer uri - sip uri to which the voice bot will forward the call at the user's request (sip:operator@pbx.com)
-+ Functions - Check the required functions that the voice bot will access based on the context of the conversation
++ Functions - Select custom functions that the voice bot can access during conversations
++ MCP Servers - Select MCP servers for extended bot capabilities
 
 After this, check that the account has been created in the opensips database (subscriber table).
 
 if everything is ok, you can use the received credentials of the sip account on your softphone or PBX to call [openai@exten.example.com] and talk to your voice bot on the phone
 
 To diagnose the SIP connection on your server, use the console utility [sngrep]
+
+## Functions and MCP Servers
+
+### Custom Functions
+- Go to `/admin/workflow/function/` to create custom functions
+- Each function requires: name, URL, JSON schema, and optional input schema
+- Functions are linked to bots and can be called during conversations
+- Only bot owners can link their own functions to their bots
+
+### MCP Servers
+- Go to `/admin/workflow/mcp/` to add MCP servers
+- Each server requires: base URL, optional API key, and approval settings
+- Server labels are auto-generated but can be edited
+- MCP servers provide extended capabilities to voice bots
+- Only bot owners can link their own MCP servers to their bots

@@ -37,6 +37,7 @@ make changes to the config.ini
 
 + [rtp] SIP_SERVER_IP - your sip server address
 + [engine] api_url - your exten.bot/api/bots/
++ [engine] api_key - token generated in exten.bot Django admin
 
 try running the voice connector
 

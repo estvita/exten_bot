@@ -10,11 +10,15 @@ The platform supports custom functions and MCP servers for extending bot capabil
 
 You can test its features at [exten.bot](https://exten.bot).
 
-## Installation 
+## Installation
+
+OS: Debian 12
 
 ### SIP Server OpenSIPS
 
 + You need to install the OpenSIPS 3.6 server; please use the [official documentation](https://www.opensips.org/Documentation/Manual-3-6) for this.
++ Install [opensips-cli](https://github.com/OpenSIPS/opensips-cli/blob/master/docs/INSTALLATION.md)
++ Install opensips modules: opensips-postgres-module, opensips-postgres-dbschema, opensips-json-module, opensips-http-modules, 
 + place the configuration files [opensips.cfg](examples/opensips-cli.cfg) and [opensips-cli.sfg](examples/opensips-cli.cfg) in the folder 
 /etc/opensips and replace the database connection data with your own
 + add your sip exten.bot domain (exten.example.com) to opensips domains tables
@@ -70,6 +74,8 @@ After installing the required packages and dependencies, proceed with the basic 
 python manage.py migrate
 python manage.py collectstatic
 python manage.py createsuperuser
+
+python manage.py runserver 0.0.0.0:8000
 ```
 ## Settings
 

@@ -122,7 +122,7 @@ AUTH_USER_MODEL = "users.User"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
 LOGIN_REDIRECT_URL = "users:redirect"
 # https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-LOGIN_URL = "account_login"
+LOGIN_URL = "/"
 
 # PASSWORDS
 # ------------------------------------------------------------------------------
@@ -331,7 +331,7 @@ ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 # https://docs.allauth.org/en/latest/account/configuration.html
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 # https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
+ACCOUNT_EMAIL_VERIFICATION = env.bool("ACCOUNT_EMAIL_VERIFICATION", "none")
 # https://docs.allauth.org/en/latest/account/configuration.html
 ACCOUNT_ADAPTER = "exten_bot.users.adapters.AccountAdapter"
 # https://docs.allauth.org/en/latest/account/forms.html

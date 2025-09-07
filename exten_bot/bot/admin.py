@@ -1,5 +1,4 @@
 from django.contrib import admin
-from django.db.models import Q
 from guardian.admin import GuardedModelAdmin
 
 from django import forms

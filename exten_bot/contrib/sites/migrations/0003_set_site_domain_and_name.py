@@ -25,7 +25,7 @@ def _update_or_create_site_with_sequence(site_model, connection, domain, name):
         # greater than the maximum value.
         max_id = site_model.objects.order_by("-id").first().id
         with connection.cursor() as cursor:
-            cursor.execute("SELECT last_value from django_site_id_seq")
+            cursor.execute("SELECT AUTO_INCREMENT FROM information_schema.TABLES WHERE TABLE_NAME = 'django_site' AND TABLE_SCHEMA = DATABASE()")
             (current_id,) = cursor.fetchone()
             if current_id <= max_id:
                 cursor.execute(

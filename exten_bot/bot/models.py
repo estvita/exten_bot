@@ -166,11 +166,11 @@ class Bot(models.Model):
 
         if is_new:
             if self.type == "registrar":
-                manage_sip_user.delay(
+                manage_sip_user(
                     "add", self.username, self.domain, self.password
                 )
             elif self.type == "registrant":
-                manage_registrant.delay(
+                manage_registrant(
                     "add", self.username, self.domain, self.password
                 )
 

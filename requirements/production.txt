@@ -2,9 +2,8 @@
 
 -r base.txt
 
+mysqlclient
 gunicorn
 django-anymail
-psycopg2-binary
-opensipscli
 django-guardian
 openai

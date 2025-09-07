@@ -13,52 +13,33 @@ You can test its features at [exten.bot](https://exten.bot).
 ## Installation
 
 OS: Debian 12
+DB: MySQL
 
 ### SIP Server OpenSIPS
 
 + You need to install the OpenSIPS 3.6 server; please use the [official documentation](https://www.opensips.org/Documentation/Manual-3-6) for this.
+
 + Install [opensips-cli](https://github.com/OpenSIPS/opensips-cli/blob/master/docs/INSTALLATION.md)
-+ Install opensips modules: opensips-postgres-module, opensips-postgres-dbschema, opensips-json-module, opensips-http-modules, 
-+ place the configuration files [opensips.cfg](examples/opensips-cli.cfg) and [opensips-cli.sfg](examples/opensips-cli.cfg) in the folder 
++ Install opensips modules: opensips-mysql-module, opensips-mysql-dbschema, opensips-json-module, opensips-http-modules, opensips-restclient-module, opensips-auth-modules, opensips-dialplan-module
+```
+curl https://apt.opensips.org/opensips-org.gpg -o /usr/share/keyrings/opensips-org.gpg
+echo "deb [signed-by=/usr/share/keyrings/opensips-org.gpg] https://apt.opensips.org bookworm 3.6-releases" >/etc/apt/sources.list.d/opensips.list
+echo "deb [signed-by=/usr/share/keyrings/opensips-org.gpg] https://apt.opensips.org bookworm cli-nightly" >/etc/apt/sources.list.d/opensips-cli.list
+
+apt update
+
+apt install opensips opensips-cli opensips-mysql-module opensips-mysql-dbschema opensips-json-module opensips-http-modules opensips-restclient-module opensips-auth-modules opensips-dialplan-module
+```
++ create opensips db: opensips-cli -x database create
++ Optional: install [openssips-cp](https://github.com/OpenSIPS/opensips-cp)
++ place the configuration files [opensips.cfg](examples/opensips.cfg) and [opensips-cli.sfg](examples/opensips-cli.cfg) in the folder 
 /etc/opensips and replace the database connection data with your own
 + add your sip exten.bot domain (exten.example.com) to opensips domains tables
 
-### AI Voice Connector 
-Use my fork of the [voice connector](https://github.com/estvita/opensips-ai-voice-connector-ce) for enhanced functionality
-
-I haven't tested my connection with installing the openai voice connector in Docker, so for now we'll run it in a virtual python environment.
+### Exten.bot Web App
 
 ```
-git clone https://github.com/estvita/opensips-ai-voice-connector-ce voice
-cd voice 
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp examples/config.ini config.ini
-```
-
-make changes to the config.ini
-
-+ [rtp] SIP_SERVER_IP - your sip server address
-+ [engine] api_url - your exten.bot/api/bots/
-+ [engine] api_key - token generated in exten.bot Django admin
-
-try running the voice connector
-
-```
-python src/main.py -c config.ini
-```
-
-in the console you should see something like this
-
-```
-2025-05-25 11:44:11,575 - tid: 139832749932608 - INFO - Starting server at 127.0.0.1:50060
-```
-After testing you can run voice connector as a [debian service](examples/connector.service)
-
-+ Next install the exten_bot
-
-```
+sudo apt-get install build-essential libmysqlclient-dev python3-dev libssl-dev pkg-config
 git clone https://github.com/estvita/exten_bot.git
 cd exten_bot
 cp examples/.env.example .env
@@ -77,6 +58,57 @@ python manage.py createsuperuser
 
 python manage.py runserver 0.0.0.0:8000
 ```
+
+in the admin panel /admin/authtoken/ create and save user token
+
+### AI Voice Connector 
+Use my fork of the [voice connector](https://github.com/estvita/opensips-ai-voice-connector-ce) for enhanced functionality
+
+I haven't tested my connection with installing the openai voice connector in Docker, so for now we'll run it in a virtual python environment.
+
+```
+git clone https://github.com/estvita/opensips-ai-voice-connector-ce connector
+cd connector 
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp docs/config.example config.ini
+```
+
+make changes to the config.ini
+
+```
+[opensips]
+ip = 127.0.0.1
+port = 8080
+
+[rtp]
+ip = 192.168.3.29 vyour Opensips server external address
+min_port = 10000
+max_port = 20000
+
+[engine]
+event_ip = 127.0.0.1
+bind_ip = 0.0.0.0
+event_port = 50060
+api_url = http://127.0.0.1:8000/api/bots/ your exten.bot api url
+api_key = XXXXXXXXXXXXX token generated in exten.bot Django admin
+```
+
+try running the voice connector
+
+
+```
+python src/main.py -c config.ini -l INFO
+```
+
+in the logs/app.log you should see something like this
+
+```
+2025-05-25 11:44:11,575 - tid: 139832749932608 - INFO - Starting server at 127.0.0.1:50060
+```
+After testing you can run voice connector as a [debian service](examples/connector.service)
+
 ## Settings
 
 go to the admin panel at your_domain/admin and fill in the following data

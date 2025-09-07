@@ -48,3 +48,16 @@ WAGTAIL_CONTENT_LANGUAGES = LANGUAGES = [
     ('en', "English"),
     ('ru', "Russian"),
 ]
+
+DATABASES = {
+    "default": {
+        **env.db(
+            "DATABASE_URL",
+            default="postgres:///exten_bot",
+        ),
+        "OPTIONS": {
+            "charset": "utf8mb4",
+            "collation": "utf8mb4_unicode_ci",
+        },
+    },
+}

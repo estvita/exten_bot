@@ -30,10 +30,10 @@ apt update
 
 apt install opensips opensips-cli opensips-mysql-module opensips-mysql-dbschema opensips-json-module opensips-http-modules opensips-restclient-module opensips-auth-modules opensips-dialplan-module
 ```
-+ create opensips db: opensips-cli -x database create
 + Optional: install [openssips-cp](https://github.com/OpenSIPS/opensips-cp)
 + place the configuration files [opensips.cfg](examples/opensips.cfg) and [opensips-cli.sfg](examples/opensips-cli.cfg) in the folder 
 /etc/opensips and replace the database connection data with your own
++ create opensips db: opensips-cli -x database create
 + add your sip exten.bot domain (exten.example.com) to opensips domains tables
 
 ### Exten.bot Web App
